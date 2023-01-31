@@ -32,6 +32,7 @@ namespace ClientConfig {
         QString message;
     };
 
+    const char* const invalid_method = "Invalid method found";
 }
 
 #endif // CONFIG_H

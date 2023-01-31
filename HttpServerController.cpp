@@ -1,11 +1,12 @@
 #include "JsonParser.h"
 #include "HttpServerController.h"
+#include "ConfigReader.h"
 #include <iostream>
 
-QString list_tickets_url = "http://127.0.0.1:8080/tickets";
-QString find_ticket_url = "http://127.0.0.1:8080/tickets/";
-QString pay_for_ticket_url = "http://127.0.0.1:8080/tickets/pay/";
-QString sell_ticket_url = "http://127.0.0.1:8080/tickets/sell/";
+QString list_tickets_url;
+QString find_ticket_url;
+QString pay_for_ticket_url;
+QString sell_ticket_url;
 
 QJsonDocument getListOfTickets();
 QJsonDocument findTicket(const QString &ticket_id);
@@ -14,7 +15,12 @@ QJsonDocument payForTicket(const QString &ticket_id);
 
 HttpServerController::HttpServerController()
 {
-
+    ConfigReader reader;
+    QString server_address = reader.getServerAddress();
+    list_tickets_url = "http://" + server_address + "/tickets";
+    find_ticket_url = "http://" + server_address + "/tickets/";
+    pay_for_ticket_url = "http://" + server_address + "/tickets/pay/";
+    sell_ticket_url = "http://" + server_address + "/tickets/sell/";
 }
 
 QJsonDocument HttpServerController::processRequest(const QString &ticket_id, ClientConfig::Method method)
@@ -40,9 +46,11 @@ QJsonDocument HttpServerController::processRequest(const QString &ticket_id, Cli
 
         return server_reply;
     }
+    else return QJsonDocument();
 }
 
 QJsonDocument getListOfTickets() {
+    std::cout << list_tickets_url.toStdString();
     QNetworkAccessManager nam;
     QString current_addr = list_tickets_url;
     QUrl list_tickets_url1 = QUrl(current_addr);

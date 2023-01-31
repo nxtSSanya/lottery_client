@@ -7,11 +7,11 @@
 #include "HttpServerController.h"
 #include "Config.h"
 #include "ClientView.h"
+#include "ConfigReader.h"
 
 int main(int argc, char *argv[])
 {
     QCoreApplication a(argc, argv);
-
     ClientView view;
     while(1) {
         std::string qq;
