@@ -9,7 +9,8 @@ class ClientView
 {
 public:
     ClientView();
-    void make_request(int method, const QString& ticket_id);
+    void makeRequest(int method, const QString& ticket_id);
+    void getTicketList();
 };
 
 #endif // CLIENTVIEW_H

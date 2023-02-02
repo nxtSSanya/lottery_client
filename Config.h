@@ -7,7 +7,8 @@ namespace ClientConfig {
         LIST_TICKETS = 0,
         FIND_TICKET = 1,
         PAY_TICKET = 2,
-        SELL_TICKET = 3
+        SELL_TICKET = 3,
+        METHODS_NUM
     };
 
     struct find_ticket_info {

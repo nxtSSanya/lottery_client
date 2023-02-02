@@ -4,6 +4,8 @@
 #include <QtNetwork>
 #include "Config.h"
 
+extern bool isServerOnline;
+
 class HttpServerController
 {
 public:

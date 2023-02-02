@@ -10,15 +10,11 @@ ClientView::ClientView()
 
 }
 
-void ClientView::make_request(int method, const QString& ticket_id)
+void ClientView::makeRequest(int method, const QString& ticket_id)
 {
     HttpServerController server_c;
     JsonParser jp;
-    if(method == 0){
-        auto tickets_list = jp.parseArray(server_c.processRequest(ticket_id, ClientConfig::Method::LIST_TICKETS));
-        printTicketsList(tickets_list);
-    }
-    else if(method == 1){
+    if(method == 1){
         auto ticket_info = jp.parseTicketInfo(server_c.processRequest(ticket_id, ClientConfig::Method::FIND_TICKET));
         printTicketInfo(ticket_info);
     }
@@ -30,45 +26,85 @@ void ClientView::make_request(int method, const QString& ticket_id)
         auto sell_ticket_info = jp.parseSellTicket(server_c.processRequest(ticket_id, ClientConfig::Method::SELL_TICKET));
         printSellInfo(sell_ticket_info);
     }
+    else {
+        std::cout << "Wrong method\n";
+        return;
+    }
 
 }
 
+void ClientView::getTicketList()
+{
+    HttpServerController server_c;
+    JsonParser jp;
+    auto tickets_list = jp.parseArray(server_c.processRequest("", ClientConfig::Method::LIST_TICKETS));
+    printTicketsList(tickets_list);
+}
+
 void printTicketsList(const std::vector<QString>& list) {
-    for(const auto& i: list){
-        std::cout << i.toStdString() << "\n";
+    if(!isServerOnline) {
+        std::cout << "Server is not online!\n";
+        return;
+    }
+    else {
+        std::cout << "Method: printTicketsList\n";
+        for(const auto& ticket: list){
+            std::cout << "ticket id: " << ticket.toStdString() << "\n";
+        }
     }
 }
 
 void printTicketInfo(const ClientConfig::find_ticket_info& ticket_info) {
-    if(!ticket_info.ticket_id.isEmpty() && !ticket_info.ticket_status.isEmpty()){
-        std::cout << "Ticket id: " << ticket_info.ticket_id.toStdString() <<"\n";
-        std::cout << "Status: " << ticket_info.ticket_status.toStdString() <<"\n";
+    if(!isServerOnline) {
+        std::cout << "Server is not online!\n";
+        return;
     }
     else {
-        std::cout << "Error code: "<< ticket_info.code.toStdString() <<"\n";
-        std::cout << "Message: "<< ticket_info.message.toStdString() <<"\n";
+        std::cout << "Method: printTicketInfo\n";
+        if(!ticket_info.ticket_id.isEmpty() && !ticket_info.ticket_status.isEmpty()){
+            std::cout << "Ticket id: " << ticket_info.ticket_id.toStdString() <<"\n";
+            std::cout << "Status: " << ticket_info.ticket_status.toStdString() <<"\n";
+        }
+        else {
+            std::cout << "Error code: "<< ticket_info.code.toStdString() <<"\n";
+            std::cout << "Message: "<< ticket_info.message.toStdString() <<"\n";
+        }
     }
 }
 
 void printSellInfo(const ClientConfig::sell_ticket_info& ticket_info) {
-    if(!ticket_info.ticket_id.isEmpty() && !ticket_info.status.isEmpty()){
-        std::cout << "Ticket id: " << ticket_info.ticket_id.toStdString() <<"\n";
-        std::cout << "Status: " << ticket_info.status.toStdString() <<"\n";
+    if(!isServerOnline) {
+        std::cout << "Server is not online!\n";
+        return;
     }
     else {
-        std::cout << "Error code: "<< ticket_info.code.toStdString() <<"\n";
-        std::cout << "Message: "<< ticket_info.message.toStdString() <<"\n";
+        std::cout << "Method: printSellInfo\n";
+        if(!ticket_info.ticket_id.isEmpty() && !ticket_info.status.isEmpty()){
+            std::cout << "Ticket id: " << ticket_info.ticket_id.toStdString() <<"\n";
+            std::cout << "Status: " << ticket_info.status.toStdString() <<"\n";
+        }
+        else {
+            std::cout << "Error code: "<< ticket_info.code.toStdString() <<"\n";
+            std::cout << "Message: "<< ticket_info.message.toStdString() <<"\n";
+        }
     }
 }
 
 void printPayInfo(const ClientConfig::pay_ticket_info& ticket_info) {
-    if(!ticket_info.ticket_id.isEmpty() && !ticket_info.status.isEmpty()){
-        std::cout << "Ticket id: " << ticket_info.ticket_id.toStdString() <<"\n";
-        std::cout << "Status: " << ticket_info.status.toStdString() <<"\n";
-        std::cout << "Win size: " << ticket_info.win_sum.toStdString() << "\n";
+    if(!isServerOnline) {
+        std::cout << "Server is not online!\n";
+        return;
     }
     else {
-        std::cout << "Error code: "<< ticket_info.code.toStdString() <<"\n";
-        std::cout << "Message: "<< ticket_info.message.toStdString() <<"\n";
+        std::cout << "Method: printPayInfo\n";
+        if(!ticket_info.ticket_id.isEmpty() && !ticket_info.status.isEmpty()){
+            std::cout << "Ticket id: " << ticket_info.ticket_id.toStdString() <<"\n";
+            std::cout << "Status: " << ticket_info.status.toStdString() <<"\n";
+            std::cout << "Win size: " << ticket_info.win_sum.toStdString() << "\n";
+        }
+        else {
+            std::cout << "Error code: "<< ticket_info.code.toStdString() <<"\n";
+            std::cout << "Message: "<< ticket_info.message.toStdString() <<"\n";
+        }
     }
 }

@@ -8,6 +8,8 @@ QString find_ticket_url;
 QString pay_for_ticket_url;
 QString sell_ticket_url;
 
+bool isServerOnline = true;
+
 QJsonDocument getListOfTickets();
 QJsonDocument findTicket(const QString &ticket_id);
 QJsonDocument sellTicket(const QString &ticket_id);
@@ -15,7 +17,7 @@ QJsonDocument payForTicket(const QString &ticket_id);
 
 HttpServerController::HttpServerController()
 {
-    ConfigReader reader;
+    ConfigReader reader(config_file_path);
     QString server_address = reader.getServerAddress();
     list_tickets_url = "http://" + server_address + "/tickets";
     find_ticket_url = "http://" + server_address + "/tickets/";
@@ -50,12 +52,11 @@ QJsonDocument HttpServerController::processRequest(const QString &ticket_id, Cli
 }
 
 QJsonDocument getListOfTickets() {
-    std::cout << list_tickets_url.toStdString();
     QNetworkAccessManager nam;
     QString current_addr = list_tickets_url;
-    QUrl list_tickets_url1 = QUrl(current_addr);
+    QUrl list_tickets_url_local = QUrl(current_addr);
 
-    QNetworkRequest request(list_tickets_url1);
+    QNetworkRequest request(list_tickets_url_local);
 
     QNetworkReply *reply = nam.get(request);
 
@@ -64,6 +65,9 @@ QJsonDocument getListOfTickets() {
     }
 
     QByteArray response_data = reply->readAll();
+    if(reply->error() != reply->NoError) {
+        isServerOnline = false;
+    }
     QJsonDocument json = QJsonDocument::fromJson(response_data);
 
     reply->deleteLater();
@@ -74,9 +78,9 @@ QJsonDocument getListOfTickets() {
 QJsonDocument findTicket(const QString& ticket_id) {
     QNetworkAccessManager nam;
     QString current_addr = find_ticket_url + ticket_id;
-    QUrl list_tickets_url2 = QUrl(current_addr);
+    QUrl list_tickets_url_local = QUrl(current_addr);
 
-    QNetworkRequest request(list_tickets_url2);
+    QNetworkRequest request(list_tickets_url_local);
 
     QNetworkReply *reply = nam.get(request);
 
@@ -85,6 +89,9 @@ QJsonDocument findTicket(const QString& ticket_id) {
     }
 
     QByteArray response_data = reply->readAll();
+    if(reply->error() != reply->NoError) {
+        isServerOnline = false;
+    }
     QJsonDocument json = QJsonDocument::fromJson(response_data);
 
     reply->deleteLater();
@@ -95,9 +102,9 @@ QJsonDocument findTicket(const QString& ticket_id) {
 QJsonDocument sellTicket(const QString& ticket_id) {
     QNetworkAccessManager nam;
     QString current_addr = sell_ticket_url + ticket_id;
-    QUrl list_tickets_url3 = QUrl(current_addr);
+    QUrl list_tickets_url_local = QUrl(current_addr);
 
-    QNetworkRequest request(list_tickets_url3);
+    QNetworkRequest request(list_tickets_url_local);
 
     QNetworkReply *reply = nam.get(request);
 
@@ -106,6 +113,9 @@ QJsonDocument sellTicket(const QString& ticket_id) {
     }
 
     QByteArray response_data = reply->readAll();
+    if(reply->error() != reply->NoError) {
+        isServerOnline = false;
+    }
     QJsonDocument json = QJsonDocument::fromJson(response_data);
 
     reply->deleteLater();
@@ -116,9 +126,9 @@ QJsonDocument sellTicket(const QString& ticket_id) {
 QJsonDocument payForTicket(const QString& ticket_id) {
     QNetworkAccessManager nam;
     QString current_addr = pay_for_ticket_url + ticket_id;
-    QUrl list_tickets_url4 = QUrl(current_addr);
+    QUrl list_tickets_url_local = QUrl(current_addr);
 
-    QNetworkRequest request(list_tickets_url4);
+    QNetworkRequest request(list_tickets_url_local);
 
     QNetworkReply *reply = nam.get(request);
 
@@ -127,6 +137,9 @@ QJsonDocument payForTicket(const QString& ticket_id) {
     }
 
     QByteArray response_data = reply->readAll();
+    if(reply->error() != reply->NoError) {
+        isServerOnline = false;
+    }
     QJsonDocument json = QJsonDocument::fromJson(response_data);
 
     reply->deleteLater();

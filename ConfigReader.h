@@ -7,12 +7,17 @@
 #include <QRegExp>
 #include <QStringList>
 
+extern QString config_file_path;
+
 class ConfigReader{
 public:
-    ConfigReader();
+    ConfigReader(const QString& file_name);
     QString getServerAddress();
+    bool isValid();
 private:
-    QString m_server_url = "127.0.0.1:8080";
+    QString m_server_addr = "";
+    QString m_server_port = "";
+    QString m_server_url = "";
 };
 
 #endif // CONFIGREADER_H
