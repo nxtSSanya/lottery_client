@@ -23,7 +23,10 @@ int main(int argc, char *argv[])
     std::cin >> input_file_path;
     config_file_path = QString::fromStdString(input_file_path);
     ConfigReader reader(config_file_path);
-    assert(reader.isValid() == true);
+    if(!reader.error().isEmpty()) {
+        std::cout << reader.error().toStdString() << "\n";
+        std::cout << "Trying to connect with default address: " << reader.getServerAddress().toStdString() << "\n";
+    }
 
     while(1) {
         std:: cout << "Available methods:\n0 - list all tickets\n1 - get ticket info\n2 - pay for ticket \n3 - sell ticket\n";

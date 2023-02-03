@@ -6,9 +6,10 @@ QString config_file_path;
 
 ConfigReader::ConfigReader(const QString& file_name)
 {
+    QString m_server_addr = "";
+    QString m_server_port = "";
     const QString address_config_field_name = "server_ip_address";
     const QString port_config_field_name = "server_port";
-    std::vector<QString> config_values;
 
     QFile input_file(file_name);
     QRegExp regex(": ");
@@ -27,8 +28,12 @@ ConfigReader::ConfigReader(const QString& file_name)
             }
         };
         input_file.close();
-
-        m_server_url = m_server_addr + ":" + m_server_port;
+        if(m_server_addr.isEmpty() || m_server_port.isEmpty()) {
+            m_error = "Some fields are empty\n";
+        }
+        else {
+            m_server_url = m_server_addr + ":" + m_server_port;
+        }
     }
     else {
         std::cout << "Cannot open the file, check your path and try again.\n";
@@ -40,10 +45,8 @@ QString ConfigReader::getServerAddress()
     return m_server_url;
 }
 
-bool ConfigReader::isValid()
+QString ConfigReader::error()
 {
-    if(m_server_url.isEmpty()) {
-        return false;
-    }
-    return true;
+    return m_error;
 }
+
